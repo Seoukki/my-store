@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SeonsPrems — Premium Digital Store</title>
+<meta name="description" content="Toko akun premium digital terpercaya. Spotify, Netflix, ChatGPT, dan banyak lagi. Pengiriman instan via QRIS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CSS VARIABLES — B&W ONLY
+═══════════════════════════════════════════ */
+:root {
+  /* Dark theme */
+  --bg:      #080808;
+  --bg2:     #101010;
+  --bg3:     #181818;
+  --bg4:     #222222;
+  --border:  #2a2a2a;
+  --border2: #3a3a3a;
+  --border3: #4a4a4a;
+  --text:    #f0f0f0;
+  --text2:   #909090;
+  --text3:   #505050;
+  --text4:   #303030;
+  --inv:     #080808;       /* inverted (for buttons) */
+  --inv-text:#f0f0f0;
+  --accent:  #f0f0f0;       /* accent = white in dark */
+  --acc-bg:  rgba(255,255,255,0.05);
+  --acc-bg2: rgba(255,255,255,0.09);
+  --green:   #4ade80;
+  --red:     #f87171;
+  --yellow:  #fbbf24;
+  --shadow:  0 8px 40px rgba(0,0,0,0.6);
+  --shadow2: 0 2px 14px rgba(0,0,0,0.4);
+  --r:6px; --r2:10px; --r3:14px;
+  --hh:56px; --sw:220px;
+  --tr: .2s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] {
+  --bg:      #f2f2f2;
+  --bg2:     #ffffff;
+  --bg3:     #f7f7f7;
+  --bg4:     #ececec;
+  --border:  #e2e2e2;
+  --border2: #cecece;
+  --border3: #b0b0b0;
+  --text:    #0a0a0a;
+  --text2:   #555555;
+  --text3:   #999999;
+  --text4:   #cccccc;
+  --inv:     #0a0a0a;
+  --inv-text:#f8f8f8;
+  --accent:  #0a0a0a;
+  --acc-bg:  rgba(0,0,0,0.04);
+  --acc-bg2: rgba(0,0,0,0.07);
+  --green:   #16a34a;
+  --red:     #dc2626;
+  --yellow:  #d97706;
+  --shadow:  0 8px 40px rgba(0,0,0,0.1);
+  --shadow2: 0 2px 14px rgba(0,0,0,0.07);
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+a{text-decoration:none;color:inherit}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;outline:none;background:none}
+input,textarea{font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border3);border-radius:4px}
+
+/* ═══════════════════════════════════════════
+   ANIMATED BACKGROUND (dark only)
+═══════════════════════════════════════════ */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+[data-theme="light"] #bg-canvas{display:none}
+
+/* Grid pattern */
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 30%,transparent 100%);
+  animation:gridPulse 10s ease-in-out infinite;
+}
+@keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
+[data-theme="light"] .bg-grid{background-image:linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px)}
+
+/* Noise overlay */
+.bg-noise{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.layout{position:relative;z-index:1;display:flex;padding-top:var(--hh);min-height:100vh}
+.main{margin-left:var(--sw);flex:1;min-height:calc(100vh - var(--hh));overflow-x:hidden}
+.page{display:none}
+.page.active{display:block}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.header{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:100;
+  background:rgba(8,8,8,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 18px;gap:12px;
+  transition:background var(--tr),border-color var(--tr);
+}
+[data-theme="light"] .header{background:rgba(242,242,242,.9)}
+
+/* Scan line accent */
+.header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 10%,rgba(255,255,255,.15) 50%,transparent 90%);
+  pointer-events:none;
+}
+[data-theme="light"] .header::after{background:linear-gradient(90deg,transparent 10%,rgba(0,0,0,.08) 50%,transparent 90%)}
+
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer;transition:opacity var(--tr)}
+.logo:hover{opacity:.75}
+.logo-icon{
+  width:30px;height:30px;border-radius:7px;
+  background:var(--text);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  box-shadow:0 0 0 1px var(--border);
+  transition:transform var(--tr),box-shadow var(--tr);
+}
+.logo:hover .logo-icon{transform:rotate(-5deg);box-shadow:0 0 0 1px var(--border3)}
+.logo-icon svg{width:16px;height:16px;color:var(--inv)}
+.logo-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:.5px}
+.logo-name span{opacity:.45}
+.logo-tag{
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;
+  padding:1.5px 6px;border-radius:3px;
+  background:var(--acc-bg);border:1px solid var(--border2);
+  color:var(--text2);letter-spacing:.08em;text-transform:uppercase;
+}
+
+.hd-nav{display:flex;align-items:center;gap:1px;margin-left:auto}
+.hd-nav button{font-size:12.5px;font-weight:500;color:var(--text2);padding:6px 11px;border-radius:var(--r);transition:all var(--tr)}
+.hd-nav button:hover{color:var(--text);background:var(--acc-bg)}
+
+.hd-actions{display:flex;align-items:center;gap:6px;margin-left:10px}
+.icon-btn{
+  width:32px;height:32px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--acc-bg);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:all var(--tr);cursor:pointer;
+}
+.icon-btn:hover{border-color:var(--border3);color:var(--text);background:var(--acc-bg2)}
+.icon-btn svg{width:15px;height:15px}
+
+.hamburger{display:none;flex-direction:column;gap:4.5px;padding:7px;cursor:pointer;color:var(--text2);border-radius:var(--r)}
+.hamburger span{display:block;width:18px;height:1.5px;background:currentColor;border-radius:2px;transition:all var(--tr)}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar{
+  position:fixed;left:0;top:var(--hh);
+  width:var(--sw);height:calc(100vh - var(--hh));
+  background:rgba(10,10,10,.97);backdrop-filter:blur(20px);
+  border-right:1px solid var(--border);
+  overflow-y:auto;padding:14px 0 40px;z-index:50;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),background var(--tr);
+}
+[data-theme="light"] .sidebar{background:rgba(248,248,248,.97)}
+.sidebar::-webkit-scrollbar{width:0}
+
+.sb-section{margin-bottom:6px}
+.sb-label{
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--text3);
+  padding:0 14px 6px;display:block;
+}
+.sb-list{list-style:none}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12.5px;font-weight:500;color:var(--text2);cursor:pointer;transition:all var(--tr);border-left:2px solid transparent;position:relative}
+.sb-item:hover,.sb-item.active{color:var(--text);background:var(--acc-bg);border-left-color:var(--text)}
+.sb-item.active{color:var(--text)}
+.sb-item svg{width:14px;height:14px;flex-shrink:0;opacity:.7}
+.sb-item:hover svg,.sb-item.active svg{opacity:1}
+.sb-chip{font-family:'DM Mono',monospace;font-size:9px;padding:1px 6px;border-radius:3px;background:var(--acc-bg);border:1px solid var(--border);color:var(--text3);margin-left:auto;letter-spacing:.04em}
+.sb-divider{height:1px;background:var(--border);margin:8px 14px}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker{
+  height:30px;overflow:hidden;display:flex;align-items:center;
+  border-bottom:1px solid var(--border);position:relative;
+  background:var(--acc-bg);
+}
+.ticker::before,.ticker::after{
+  content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none;
+}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent)}
+[data-theme="light"] .ticker::before{background:linear-gradient(90deg,var(--bg3),transparent)}
+[data-theme="light"] .ticker::after{background:linear-gradient(-90deg,var(--bg3),transparent)}
+.ticker-label{
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;padding:0 12px;white-space:nowrap;
+  border-right:1px solid var(--border);height:100%;display:flex;align-items:center;
+  background:var(--bg3);color:var(--text2);flex-shrink:0;z-index:3;
+}
+.ticker-dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:6px;animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ticker-track{display:flex;white-space:nowrap;animation:tickerRoll 60s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{font-size:11px;color:var(--text2);padding:0 22px;display:flex;align-items:center;gap:6px}
+.ticker-sep{width:1px;height:10px;background:var(--border2);flex-shrink:0}
+@keyframes tickerRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero{padding:30px 24px 24px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+
+/* Decorative corner lines */
+.hero::before{
+  content:'';position:absolute;top:0;right:0;
+  width:200px;height:200px;
+  background:radial-gradient(circle at 100% 0%,rgba(255,255,255,.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+[data-theme="light"] .hero::before{background:radial-gradient(circle at 100% 0%,rgba(0,0,0,.03) 0%,transparent 60%)}
+
+.hero-status{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--text2);
+  border:1px solid var(--border2);padding:4px 11px;border-radius:20px;
+  margin-bottom:16px;background:var(--acc-bg);
+  animation:fadeSlideUp .6s both;
+}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.2s infinite;flex-shrink:0}
+
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(26px,4.5vw,48px);font-weight:800;
+  letter-spacing:-.5px;line-height:1.05;margin-bottom:12px;
+  animation:fadeSlideUp .6s .1s both;
+}
+.hero h1 .accent{color:var(--text);opacity:.45}
+.hero-desc{font-size:13px;color:var(--text2);max-width:420px;line-height:1.75;animation:fadeSlideUp .6s .18s both}
+
+.hero-stats{
+  display:flex;flex-wrap:wrap;margin-top:22px;
+  border:1px solid var(--border);border-radius:var(--r2);
+  width:fit-content;overflow:hidden;
+  animation:fadeSlideUp .6s .25s both;
+  background:var(--bg2);
+}
+.stat-item{padding:10px 16px;border-right:1px solid var(--border);text-align:center}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--text)}
+.stat-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+
+/* ═══════════════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════════════ */
+.content{padding:22px 24px}
+
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text3);
+  display:flex;align-items:center;gap:7px;
+}
+.section-title::before{content:'';width:2px;height:10px;background:var(--text3);border-radius:2px;flex-shrink:0}
+.section-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3)}
+
+/* ═══════════════════════════════════════════
+   CATEGORIES
+═══════════════════════════════════════════ */
+.cats-bar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+.cat-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;
+  color:var(--text2);border:1px solid var(--border);background:var(--acc-bg);
+  cursor:pointer;transition:all var(--tr);white-space:nowrap;
+}
+.cat-btn svg{width:11px;height:11px;flex-shrink:0}
+.cat-btn:hover{border-color:var(--border2);color:var(--text);background:var(--acc-bg2)}
+.cat-btn.active{
+  background:var(--text);color:var(--bg);
+  border-color:var(--text);
+}
+[data-theme="light"] .cat-btn.active{background:var(--text);color:var(--bg2)}
+
+/* ═══════════════════════════════════════════
+   PRODUCTS GRID
+═══════════════════════════════════════════ */
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(185px,1fr));
+  gap:8px;margin-bottom:36px;
+}
+.product-card{
+  border:1px solid var(--border);border-radius:var(--r2);padding:15px;
+  background:var(--bg2);cursor:pointer;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.product-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:var(--text);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.product-card:hover{
+  border-color:var(--border3);
+  transform:translateY(-2px);
+  box-shadow:var(--shadow2);
+}
+.product-card:hover::after{transform:scaleX(1)}
+
+.product-icon{
+  width:38px;height:38px;border-radius:9px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:11px;transition:all var(--tr);color:var(--text2);
+}
+.product-icon svg{width:18px;height:18px}
+.product-card:hover .product-icon{background:var(--bg4);border-color:var(--border2);color:var(--text)}
+
+.product-badge{
+  position:absolute;top:10px;right:10px;
+  font-family:'DM Mono',monospace;font-size:8.5px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:2px 6px;border-radius:3px;
+}
+.badge-hot{background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.badge-new{background:var(--acc-bg);color:var(--text2);border:1px solid var(--border2)}
+.badge-sale{background:rgba(251,191,36,.1);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+
+.product-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;letter-spacing:-.2px}
+.product-desc{font-size:11.5px;color:var(--text2);margin-bottom:12px;line-height:1.55}
+.product-footer{display:flex;align-items:center;justify-content:space-between}
+.product-price{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:500;color:var(--text)}
+.product-from{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;display:block;margin-top:1px}
+.product-arrow{
+  width:26px;height:26px;border:1px solid var(--border);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;color:var(--text3);
+  transition:all var(--tr);background:var(--bg3);
+}
+.product-arrow svg{width:12px;height:12px}
+.product-card:hover .product-arrow{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* Skeleton */
+.skeleton{background:var(--bg3);border-radius:var(--r);overflow:hidden;position:relative}
+.skeleton::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 50%,transparent 100%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;
+}
+[data-theme="light"] .skeleton::after{background:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.04) 50%,transparent 100%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* ═══════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════ */
+.divider{height:1px;background:var(--border);margin:32px 0;position:relative}
+.divider::before{
+  content:'';position:absolute;left:50%;top:-.5px;transform:translateX(-50%);
+  width:60px;height:1px;background:var(--text3);border-radius:1px;
+}
+
+/* ═══════════════════════════════════════════
+   TESTIMONIAL SLIDER
+═══════════════════════════════════════════ */
+.testimonial-wrap{position:relative;margin-bottom:36px}
+.testimonial-slider{overflow:hidden;border-radius:var(--r2)}
+.testimonial-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.testimonial-card{
+  min-width:100%;border:1px solid var(--border);border-radius:var(--r2);
+  padding:20px;background:var(--bg2);position:relative;
+}
+.testimonial-card::before{
+  content:'\201C';position:absolute;top:-8px;right:14px;
+  font-size:64px;font-family:Georgia,serif;color:var(--border2);
+  line-height:1;pointer-events:none;
+}
+.testi-stars{display:flex;gap:3px;margin-bottom:9px}
+.star-icon{width:13px;height:13px;color:var(--yellow)}
+.testi-text{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:14px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--bg4);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--text);flex-shrink:0;
+}
+.testi-name{font-size:13px;font-weight:600}
+.testi-product{font-size:10.5px;color:var(--text3);font-family:'DM Mono',monospace}
+
+.slider-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+.slider-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--border);
+  background:var(--bg2);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all var(--tr);
+}
+.slider-btn:hover{border-color:var(--border3);color:var(--text);background:var(--acc-bg2)}
+.slider-btn svg{width:13px;height:13px}
+.slider-dots{display:flex;gap:5px;align-items:center}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border3);cursor:pointer;transition:all var(--tr)}
+.dot.active{background:var(--text);width:16px;border-radius:3px}
+
+/* ═══════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════ */
+.faq-list{display:flex;flex-direction:column;gap:5px;margin-bottom:36px}
+.faq-item{border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;background:var(--bg2);transition:border-color var(--tr)}
+.faq-item:hover,.faq-item.open{border-color:var(--border2)}
+.faq-item.open{border-color:var(--border3)}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 15px;font-size:13px;font-weight:600;cursor:pointer;
+  transition:background var(--tr);gap:12px;user-select:none;
+}
+.faq-q:hover{background:var(--acc-bg)}
+.faq-icon{
+  width:20px;height:20px;border:1px solid var(--border2);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--text2);transition:all var(--tr);
+}
+.faq-icon svg{width:12px;height:12px;transition:transform .3s}
+.faq-item.open .faq-icon{background:var(--text);color:var(--bg);border-color:var(--text)}
+.faq-item.open .faq-icon svg{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.faq-item.open .faq-a{max-height:400px}
+.faq-a-inner{padding:0 15px 13px;font-size:12.5px;color:var(--text2);line-height:1.75;border-top:1px solid var(--border);padding-top:11px}
+
+/* ═══════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:36px}
+.contact-card{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  border:1px solid var(--border);border-radius:var(--r2);
+  background:var(--bg2);cursor:pointer;transition:all var(--tr);
+}
+.contact-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:var(--shadow2)}
+.contact-ico{
+  width:36px;height:36px;border-radius:9px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--text2);
+  transition:all var(--tr);
+}
+.contact-ico svg{width:17px;height:17px}
+.contact-card:hover .contact-ico{background:var(--bg4);color:var(--text);border-color:var(--border2)}
+.contact-label{font-size:9.5px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.contact-value{font-size:13px;font-weight:600}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer{
+  padding:20px 24px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.footer-brand{font-family:'Syne',sans-serif;font-size:15px;font-weight:800}
+.footer-brand span{opacity:.4}
+.footer-text{font-size:11.5px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* ═══════════════════════════════════════════
+   PRODUCT DETAIL PAGE
+═══════════════════════════════════════════ */
+.detail-wrap{padding:22px 24px;max-width:500px}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  color:var(--text2);background:var(--bg2);border:1px solid var(--border);
+  padding:7px 12px;border-radius:var(--r);margin-bottom:20px;
+  cursor:pointer;transition:all var(--tr);
+}
+.back-btn svg{width:13px;height:13px}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--bg3)}
+
+.detail-header{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.detail-icon{
+  width:48px;height:48px;border-radius:11px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text2);
+}
+.detail-icon svg{width:24px;height:24px}
+.detail-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:3px}
+.detail-desc{font-size:12px;color:var(--text2)}
+
+.form-section{margin-bottom:14px}
+.form-label{
+  display:block;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;
+}
+.form-input{
+  width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);
+  background:var(--bg2);color:var(--text);font-size:13px;
+  transition:all var(--tr);outline:none;
+}
+.form-input:focus{border-color:var(--border3);background:var(--bg3);box-shadow:0 0 0 3px var(--acc-bg2)}
+.form-input::placeholder{color:var(--text3)}
+
+.duration-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.dur-btn{
+  border:1px solid var(--border);border-radius:var(--r);padding:8px 6px;
+  text-align:center;cursor:pointer;transition:all var(--tr);background:var(--bg2);
+}
+.dur-btn:hover{border-color:var(--border2);background:var(--bg3)}
+.dur-btn.selected{background:var(--text);border-color:var(--text)}
+.dur-label{font-size:11px;font-weight:500;margin-bottom:2px;color:var(--text2)}
+.dur-price{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--text)}
+.dur-btn.selected .dur-label,.dur-btn.selected .dur-price{color:var(--bg)}
+
+.qty-control{display:flex;align-items:center;gap:10px}
+.qty-btn{
+  width:32px;height:32px;border:1px solid var(--border);border-radius:var(--r);
+  background:var(--bg2);color:var(--text);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all var(--tr);font-weight:300;line-height:1;
+}
+.qty-btn:hover{border-color:var(--border2);background:var(--bg3)}
+.qty-val{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;min-width:26px;text-align:center}
+
+.order-summary{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px;margin-bottom:14px;
+}
+.sum-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;font-size:12.5px;
+  border-bottom:1px solid var(--border);
+}
+.sum-row:last-child{border-bottom:none}
+.sum-row .label{color:var(--text2)}
+.sum-row .value{font-family:'DM Mono',monospace;font-size:12px;font-weight:500}
+.sum-row.total .label{font-weight:700;color:var(--text)}
+.sum-row.total .value{font-size:14px;font-weight:700;color:var(--text)}
+.sum-row.total{margin-top:4px;padding-top:9px}
+
+/* Buttons */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:11px 20px;border-radius:var(--r);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all var(--tr);position:relative;overflow:hidden;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--text);color:var(--bg);border:1px solid var(--text)}
+.btn-primary:hover:not(:disabled){opacity:.88}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border2)}
+.btn-secondary:hover:not(:disabled){color:var(--text);border-color:var(--border3);background:var(--bg4)}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+
+/* ═══════════════════════════════════════════
+   QRIS SECTION
+═══════════════════════════════════════════ */
+.qris-section{display:none;margin-top:16px;animation:fadeSlideUp .4s both}
+.qris-section.show{display:block}
+.qris-head{text-align:center;margin-bottom:14px}
+.qris-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+.qris-amount{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--text)}
+
+.qris-wrap{
+  position:relative;width:200px;height:200px;margin:0 auto 16px;
+  border:1px solid var(--border2);border-radius:12px;overflow:hidden;
+  background:#fff;display:flex;align-items:center;justify-content:center;
+}
+/* Corner decorations */
+.qr-corner{position:absolute;width:16px;height:16px;border-color:var(--text3);border-style:solid;border-width:0}
+.qr-corner.tl{top:5px;left:5px;border-top-width:2px;border-left-width:2px;border-radius:2px 0 0 0}
+.qr-corner.tr{top:5px;right:5px;border-top-width:2px;border-right-width:2px;border-radius:0 2px 0 0}
+.qr-corner.bl{bottom:5px;left:5px;border-bottom-width:2px;border-left-width:2px;border-radius:0 0 0 2px}
+.qr-corner.br{bottom:5px;right:5px;border-bottom-width:2px;border-right-width:2px;border-radius:0 0 2px 0}
+.qr-loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.qr-img{width:184px;height:184px;object-fit:contain;display:none}
+
+/* Timer */
+.timer-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:12px}
+.timer-ring{transform:rotate(-90deg)}
+.timer-ring-bg{fill:none;stroke:var(--border);stroke-width:3}
+.timer-ring-fg{fill:none;stroke:var(--text2);stroke-width:3;stroke-linecap:round;stroke-dasharray:188.4;transition:stroke-dashoffset .9s linear}
+.timer-num{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;margin-top:-42px;position:relative;z-index:1}
+.timer-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+
+/* TXN box */
+.txn-box{
+  display:none;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:9px 11px;margin-bottom:10px;
+  align-items:center;gap:8px;
+}
+.txn-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.txn-id{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text);word-break:break-all}
+.txn-copy{
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;
+  padding:4px 9px;border:1px solid var(--border2);border-radius:4px;
+  cursor:pointer;background:var(--bg2);color:var(--text2);
+  transition:all var(--tr);flex-shrink:0;
+}
+.txn-copy:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.qris-note{text-align:center;font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.55}
+
+/* ═══════════════════════════════════════════
+   SUCCESS OVERLAY
+═══════════════════════════════════════════ */
+.success-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(12px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.success-overlay.show{display:flex;animation:fadeIn .3s both}
+.success-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r3);padding:26px;width:100%;max-width:380px;
+  text-align:center;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+.success-icon{
+  width:52px;height:52px;border-radius:13px;
+  background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;color:var(--green);
+}
+.success-icon svg{width:26px;height:26px}
+.success-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;margin-bottom:5px}
+.success-sub{font-size:12.5px;color:var(--text2);margin-bottom:18px}
+.account-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r);padding:11px;text-align:left;margin-bottom:14px;
+}
+.acc-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:5px 0;font-size:12px;gap:10px;
+}
+.acc-row:not(:last-child){border-bottom:1px solid var(--border)}
+.acc-key{color:var(--text3);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.04em;flex-shrink:0}
+.acc-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;text-align:right;word-break:break-all;display:flex;align-items:center;gap:5px}
+.copy-btn{
+  font-size:9px;padding:1.5px 6px;border:1px solid var(--border2);border-radius:3px;
+  cursor:pointer;background:var(--bg2);color:var(--text3);
+  transition:all var(--tr);flex-shrink:0;font-family:'DM Mono',monospace;
+}
+.copy-btn:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* ═══════════════════════════════════════════
+   CONFIG MODAL
+═══════════════════════════════════════════ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:150;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.show{display:flex;animation:fadeIn .25s both}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r3);padding:22px;width:100%;max-width:370px;
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both;
+  position:relative;overflow:hidden;
+}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--border3)}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:26px;height:26px;border:1px solid var(--border);border-radius:6px;
+  background:var(--bg3);color:var(--text2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--tr);
+}
+.modal-close:hover{border-color:var(--red);color:var(--red)}
+.modal-close svg{width:13px;height:13px}
+.modal-actions{display:flex;gap:7px;margin-top:4px}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:18px;right:18px;z-index:300;
+  background:var(--bg2);color:var(--text);border:1px solid var(--border);
+  padding:10px 15px;border-radius:var(--r);font-size:12.5px;font-weight:500;
+  display:flex;align-items:center;gap:8px;max-width:300px;
+  box-shadow:var(--shadow);font-family:'DM Mono',monospace;
+  animation:toastIn .3s cubic-bezier(.4,0,.2,1) both;
+}
+.toast svg{width:14px;height:14px;flex-shrink:0}
+.toast.error{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.18);color:var(--red)}
+.toast.success{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.18);color:var(--green)}
+.toast.warn{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.18);color:var(--yellow)}
+
+/* ═══════════════════════════════════════════
+   SPINNER
+═══════════════════════════════════════════ */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+
+/* ═══════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════ */
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(50px) scale(.92)}to{opacity:1;transform:translateX(0) scale(1)}}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Stagger */
+.d1{transition-delay:.06s}.d2{transition-delay:.12s}.d3{transition-delay:.18s}.d4{transition-delay:.24s}.d5{transition-delay:.30s}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:768px){
+  :root{--sw:0px}
+  .sidebar{transform:translateX(-222px);width:222px;background:rgba(8,8,8,.99)}
+  .sidebar.open{transform:translateX(0);box-shadow:6px 0 40px rgba(0,0,0,.6)}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .hd-nav{display:none}
+  .hero,.content,.detail-wrap,.footer{padding-left:15px;padding-right:15px}
+  .duration-grid{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .hero-stats{width:100%}
+  .stat-item{flex:1;min-width:50px}
+}
+@media(max-width:480px){
+  .products-grid{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── BACKGROUND ────────────────────────── -->
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+
+<!-- ── HEADER ────────────────────────────── -->
+<header class="header">
+  <button class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="logo" onclick="goHome()">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+    </div>
+    <div class="logo-name">SEONS<span>PREMS</span></div>
+    <div class="logo-tag">STORE</div>
+  </div>
+
+  <nav class="hd-nav">
+    <button onclick="scrollToSection('products')">Produk</button>
+    <button onclick="scrollToSection('testi')">Testimoni</button>
+    <button onclick="scrollToSection('faq')">FAQ</button>
+    <button onclick="scrollToSection('contact')">Kontak</button>
+    <button onclick="window.location.href='/admin'">Admin</button>
+  </nav>
+
+  <div class="hd-actions">
+    <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Ganti tema">
+      <svg id="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openConfig()" title="Pengaturan API">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── SIDEBAR ───────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <span class="sb-label">Navigasi</span>
+    <ul class="sb-list">
+      <li class="sb-item active" onclick="goHome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Beranda
+      </li>
+      <li class="sb-item" onclick="scrollToSection('products')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Produk
+      </li>
+      <li class="sb-item" onclick="scrollToSection('testi')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Testimoni
+      </li>
+      <li class="sb-item" onclick="scrollToSection('faq')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        FAQ
+      </li>
+      <li class="sb-item" onclick="scrollToSection('contact')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Kontak
+      </li>
+    </ul>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <span class="sb-label">Kategori</span>
+    <ul class="sb-list" id="sb-cats">
+      <li class="sb-item active" onclick="filterCat('all')" data-cat="all">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
+        Semua <span class="sb-chip" id="chip-all">—</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <span class="sb-label">Jaminan</span>
+    <ul class="sb-list">
+      <li class="sb-item" style="cursor:default;pointer-events:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Pengiriman Instan
+      </li>
+      <li class="sb-item" style="cursor:default;pointer-events:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Pembayaran Aman
+      </li>
+      <li class="sb-item" style="cursor:default;pointer-events:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Garansi Penuh
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<!-- ── LAYOUT ─────────────────────────────── -->
+<div class="layout">
+<div class="main">
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div class="page active" id="pg-home">
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-label">
+      <span class="ticker-dot"></span>LIVE
+    </div>
+    <div style="overflow:hidden;flex:1;position:relative">
+      <div class="ticker-track" id="ticker-track">
+        <span class="ticker-item">Selamat datang di SeonsPrems — Premium Digital Accounts Store<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Pengiriman otomatis dalam hitungan detik setelah pembayaran dikonfirmasi<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Tersedia: Spotify — Netflix — YouTube — Disney+ — Canva Pro — ChatGPT Plus — Claude Pro<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Pembayaran via QRIS: GoPay · OVO · DANA · ShopeePay · Mobile Banking<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Support 24/7 via WhatsApp — Respon cepat, solusi tepat<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Selamat datang di SeonsPrems — Premium Digital Accounts Store<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Pengiriman otomatis dalam hitungan detik setelah pembayaran dikonfirmasi<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Tersedia: Spotify — Netflix — YouTube — Disney+ — Canva Pro — ChatGPT Plus — Claude Pro<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Pembayaran via QRIS: GoPay · OVO · DANA · ShopeePay · Mobile Banking<span class="ticker-sep"></span></span>
+        <span class="ticker-item">Support 24/7 via WhatsApp — Respon cepat, solusi tepat<span class="ticker-sep"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-status">
+      <span class="status-dot"></span>Online &amp; Siap Melayani
+    </div>
+    <h1>PREMIUM DIGITAL<br><span class="accent">ACCOUNTS STORE</span></h1>
+    <p class="hero-desc">Dapatkan akun premium berkualitas tinggi dengan harga terjangkau. Pengiriman instan otomatis, garansi penuh, support 24/7.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-customers">—</div>
+        <div class="stat-label">Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">99%</div>
+        <div class="stat-label">Satisfied</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">&lt;1s</div>
+        <div class="stat-label">Delivery</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Support</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- PRODUCTS -->
+    <div id="products">
+      <div class="section-header reveal">
+        <div class="section-title">Kategori Produk</div>
+      </div>
+      <div class="cats-bar reveal" id="cats-bar">
+        <button class="cat-btn active" onclick="filterCat('all')" data-c="all">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
+          Semua
+        </button>
+      </div>
+
+      <div class="section-header reveal">
+        <div class="section-title">Produk Tersedia</div>
+        <span class="section-count" id="prod-count"></span>
+      </div>
+      <div class="products-grid" id="products-grid">
+        <!-- skeleton placeholders -->
+        <div class="product-card skeleton" style="height:165px"></div>
+        <div class="product-card skeleton" style="height:165px;animation-delay:.1s"></div>
+        <div class="product-card skeleton" style="height:165px;animation-delay:.2s"></div>
+        <div class="product-card skeleton" style="height:165px;animation-delay:.3s"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TESTIMONIALS -->
+    <div id="testi">
+      <div class="section-header reveal">
+        <div class="section-title">Testimoni Pelanggan</div>
+      </div>
+      <div class="testimonial-wrap reveal">
+        <div class="testimonial-slider">
+          <div class="testimonial-track" id="testi-track"></div>
+        </div>
+        <div class="slider-nav">
+          <button class="slider-btn" onclick="testiPrev()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div class="slider-dots" id="testi-dots"></div>
+          <button class="slider-btn" onclick="testiNext()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FAQ -->
+    <div id="faq">
+      <div class="section-header reveal">
+        <div class="section-title">Pertanyaan Umum</div>
+      </div>
+      <div class="faq-list reveal" id="faq-list"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CONTACT -->
+    <div id="contact">
+      <div class="section-header reveal">
+        <div class="section-title">Hubungi Kami</div>
+      </div>
+      <div class="contact-grid reveal" id="contact-grid"></div>
+    </div>
+
+  </div><!-- /content -->
+
+  <footer class="footer">
+    <div class="footer-brand">SEONS<span>PREMS</span></div>
+    <div class="footer-text" id="footer-text">© 2025 SeonsPrems · Harga dapat berubah sewaktu-waktu</div>
+  </footer>
+
+</div><!-- /pg-home -->
+
+<!-- ══════════ PRODUCT DETAIL PAGE ══════════ -->
+<div class="page" id="pg-detail">
+  <div class="detail-wrap">
+    <button class="back-btn" onclick="goHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Kembali
+    </button>
+
+    <div class="detail-header">
+      <div class="detail-icon" id="d-icon"></div>
+      <div>
+        <div class="detail-title" id="d-title"></div>
+        <div class="detail-desc" id="d-desc"></div>
+      </div>
+    </div>
+
+    <!-- Durasi -->
+    <div class="form-section">
+      <label class="form-label">Durasi Berlangganan</label>
+      <div class="duration-grid" id="dur-grid"></div>
+    </div>
+
+    <!-- Jumlah -->
+    <div class="form-section">
+      <label class="form-label">Jumlah Akun</label>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-val" id="qty-val">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-section">
+      <label class="form-label" for="inp-email">Alamat Email</label>
+      <input type="email" class="form-input" id="inp-email" placeholder="email@kamu.com" autocomplete="email">
+    </div>
+
+    <!-- WhatsApp -->
+    <div class="form-section">
+      <label class="form-label" for="inp-wa">Nomor WhatsApp</label>
+      <input type="tel" class="form-input" id="inp-wa" placeholder="08xxxxxxxxxx" autocomplete="tel">
+    </div>
+
+    <!-- Summary -->
+    <div class="order-summary">
+      <div class="sum-row"><span class="label">Produk</span><span class="value" id="s-prod">—</span></div>
+      <div class="sum-row"><span class="label">Durasi</span><span class="value" id="s-dur">—</span></div>
+      <div class="sum-row"><span class="label">Jumlah Akun</span><span class="value" id="s-qty">1 akun</span></div>
+      <div class="sum-row total"><span class="label">Total Bayar</span><span class="value" id="s-total">—</span></div>
+    </div>
+
+    <button class="btn btn-primary" id="pay-btn" onclick="doPayment()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Bayar via QRIS
+    </button>
+
+    <!-- QRIS Section (shown after payment initiated) -->
+    <div class="qris-section" id="qris-section">
+      <div class="qris-head">
+        <div class="qris-title">Scan QRIS untuk Membayar</div>
+        <div class="qris-amount" id="qris-amount"></div>
+      </div>
+
+      <div class="qris-wrap" id="qris-wrap">
+        <div class="qr-corner tl"></div>
+        <div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div>
+        <div class="qr-corner br"></div>
+        <div class="qr-loader" id="qr-loader">
+          <span class="spinner"></span>
+        </div>
+        <img id="qr-img" class="qr-img" src="" alt="QR Code">
+      </div>
+
+      <div class="timer-wrap">
+        <svg class="timer-ring" width="62" height="62" viewBox="0 0 62 62">
+          <circle class="timer-ring-bg" cx="31" cy="31" r="28"/>
+          <circle class="timer-ring-fg" id="timer-ring" cx="31" cy="31" r="28" style="stroke-dashoffset:0"/>
+        </svg>
+        <div class="timer-num" id="timer-num">05:00</div>
+        <div class="timer-label">Sisa Waktu</div>
+      </div>
+
+      <div class="txn-box" id="txn-box" style="display:flex">
+        <div style="flex:1;min-width:0">
+          <div class="txn-label">ID Transaksi</div>
+          <div class="txn-id" id="txn-id-disp">—</div>
+        </div>
+        <button class="txn-copy" onclick="copyTxnId()">SALIN</button>
+      </div>
+
+      <div class="qris-note">Scan dengan GoPay · OVO · DANA · ShopeePay<br>atau mobile banking yang mendukung QRIS</div>
+
+      <button class="btn btn-secondary" id="check-btn" onclick="checkPayment()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Cek Status Pembayaran
+      </button>
+    </div>
+
+  </div>
+</div><!-- /pg-detail -->
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ── SUCCESS OVERLAY ───────────────────── -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="success-title">Pembayaran Berhasil!</div>
+    <div class="success-sub">Akun premium kamu siap digunakan</div>
+    <div class="account-box" id="account-box"></div>
+    <button class="btn btn-primary" onclick="closeSuccess()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Selesai
+    </button>
+  </div>
+</div>
+
+<!-- ── CONFIG MODAL ──────────────────────── -->
+<div class="modal-overlay" id="cfg-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCfg()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Konfigurasi</div>
+    <div class="modal-sub">Supabase URL dan Anon Key untuk koneksi database.</div>
+
+    <label class="form-label">Supabase URL</label>
+    <input type="text" class="form-input" id="sb-url" placeholder="https://xxx.supabase.co" style="margin-bottom:10px">
+    <label class="form-label">Supabase Anon Key</label>
+    <input type="text" class="form-input" id="sb-key" placeholder="eyJhbGc..." style="margin-bottom:16px">
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeCfg()" style="flex:1">Batal</button>
+      <button class="btn btn-primary" onclick="saveCfg()" style="flex:2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Simpan &amp; Muat Ulang
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SIDEBAR BACKDROP (mobile) ────────── -->
+<div id="sb-backdrop" style="display:none;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.5)" onclick="closeSidebar()"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
+const CFG = {
+  SB_URL : localStorage.getItem('sb_url')  || '',
+  SB_KEY : localStorage.getItem('sb_anon') || '',
+};
+
+/* ══════════════════════════════════════════
+   SUPABASE CLIENT (lightweight, client-side)
+══════════════════════════════════════════ */
+const SB = {
+  async get(table, params='') {
+    if (!CFG.SB_URL || !CFG.SB_KEY) return null;
+    try {
+      const r = await fetch(`${CFG.SB_URL}/rest/v1/${table}?${params}`, {
+        headers:{
+          apikey: CFG.SB_KEY,
+          Authorization: `Bearer ${CFG.SB_KEY}`,
+        }
+      });
+      if (!r.ok) return null;
+      return r.json();
+    } catch { return null; }
+  }
+};
+
+/* ══════════════════════════════════════════
+   FALLBACK DATA
+══════════════════════════════════════════ */
+const FB_PRODUCTS = [
+  {id:'spotify',  name:'Spotify Premium', category:'music',        badge:'hot',  description:'Musik tanpa iklan, download offline, kualitas audio Ultra HD.',    icon:'music',   prices:{'1 Bulan':8000,'3 Bulan':22000,'6 Bulan':40000,'1 Tahun':75000}},
+  {id:'netflix',  name:'Netflix Premium', category:'streaming',    badge:'hot',  description:'Stream film & series 4K, akses semua konten tanpa batas.',          icon:'video',   prices:{'1 Bulan':15000,'3 Bulan':42000,'6 Bulan':80000,'1 Tahun':150000}},
+  {id:'youtube',  name:'YouTube Premium', category:'streaming',    badge:null,   description:'Tanpa iklan, background play, YouTube Music gratis full.',           icon:'youtube', prices:{'1 Bulan':7000,'3 Bulan':19000,'6 Bulan':35000,'1 Tahun':65000}},
+  {id:'disney',   name:'Disney+ Hotstar', category:'streaming',    badge:'new',  description:'Marvel, Star Wars, Disney, Pixar & ribuan konten eksklusif.',        icon:'star',    prices:{'1 Bulan':9000,'3 Bulan':25000,'6 Bulan':45000,'1 Tahun':85000}},
+  {id:'canva',    name:'Canva Pro',       category:'productivity', badge:'sale', description:'100M+ aset premium, brand kit, background remover, Magic AI.',       icon:'pen',     prices:{'1 Bulan':12000,'3 Bulan':33000,'6 Bulan':60000,'1 Tahun':110000}},
+  {id:'chatgpt',  name:'ChatGPT Plus',    category:'ai',           badge:'hot',  description:'GPT-4o, DALL·E 3, browsing real-time, plugins unlimited.',           icon:'bot',     prices:{'1 Bulan':120000,'3 Bulan':330000,'6 Bulan':600000,'1 Tahun':1100000}},
+  {id:'capcut',   name:'CapCut Pro',      category:'productivity', badge:'new',  description:'Edit video profesional, template premium, no watermark export.',     icon:'film',    prices:{'1 Bulan':10000,'3 Bulan':28000,'6 Bulan':52000,'1 Tahun':95000}},
+  {id:'claude',   name:'Claude Pro',      category:'ai',           badge:'new',  description:'Claude Sonnet & Opus, unlimited messages, Projects, Priority.',      icon:'zap',     prices:{'1 Bulan':130000,'3 Bulan':360000,'6 Bulan':660000,'1 Tahun':1200000}},
+];
+const FB_TESTI = [
+  {name:'Rizky A.', product:'Spotify Premium', rating:5, message:'Mantap banget! Akun langsung aktif dalam hitungan detik. Harga murah tapi kualitas premium.'},
+  {name:'Dewi S.',  product:'Netflix Premium',  rating:5, message:'Sudah langganan 4 bulan, nggak pernah ada masalah. Akun stabil, CS fast response.'},
+  {name:'Andi P.',  product:'ChatGPT Plus',     rating:5, message:'Harga jauh lebih murah dari official, tapi akun beneran bisa dipakai GPT-4o. Puas banget!'},
+  {name:'Sari M.',  product:'Canva Pro',         rating:4, message:'Proses cepat, akun langsung bisa digunakan. Template premium semua unlocked.'},
+  {name:'Budi K.',  product:'YouTube Premium',   rating:5, message:'Akhirnya nonton YouTube tanpa iklan! Baru bayar langsung dapat akun.'},
+];
+const FB_FAQS = [
+  {question:'Berapa lama akun dikirim setelah pembayaran?', answer:'Akun dikirim otomatis dalam hitungan detik setelah pembayaran QRIS terkonfirmasi. Sistem bekerja 24/7 tanpa proses manual.'},
+  {question:'Apakah akun yang diberikan aman dan original?', answer:'Ya, semua akun adalah akun premium resmi yang aman. Kami memberikan garansi selama masa berlangganan dan siap mengganti jika ada masalah.'},
+  {question:'Apa yang terjadi jika akun bermasalah selama aktif?', answer:'Hubungi support via WhatsApp dan kami akan mengganti akun maksimal dalam 1x24 jam. Garansi berlaku selama masa berlangganan.'},
+  {question:'Apakah QRIS aman untuk pembayaran?', answer:'QRIS adalah standar pembayaran resmi Bank Indonesia yang aman dan terpercaya. Semua transaksi terenkripsi dan terlindungi.'},
+  {question:'Bisa bayar selain QRIS?', answer:'Saat ini kami hanya menerima pembayaran via QRIS yang bisa digunakan dengan GoPay, OVO, DANA, ShopeePay, dan semua mobile banking.'},
+];
+const FB_CONTACTS = [
+  {platform:'WhatsApp', value:'@SeonsPrems', url:'https://wa.me/6281234567890', icon:'phone'},
+  {platform:'Telegram', value:'@SeonsPrems', url:'https://t.me/SeonsPrems',    icon:'send'},
+  {platform:'Instagram',value:'@SeonsPrems', url:'https://instagram.com',      icon:'instagram'},
+  {platform:'Email',    value:'cs@seonsprems.id',url:'mailto:cs@seonsprems.id',icon:'mail'},
+];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let allProducts = [], filteredProducts = [], currentCat = 'all';
+let categories  = [];
+let currentProduct = null, selectedDuration = null, qty = 1;
+let txnId = null, orderId = null, timerInterval = null;
+let testiIdx = 0, testiData = [], testiTimer = null;
+
+/* ══════════════════════════════════════════
+   ICONS MAP
+══════════════════════════════════════════ */
+const ICONS = {
+  music   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  video   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`,
+  youtube : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>`,
+  star    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  pen     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  bot     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M12 11V7"/><circle cx="12" cy="5" r="2"/><line x1="8" y1="15" x2="8" y2="15" stroke-width="3" stroke-linecap="round"/><line x1="12" y1="15" x2="12" y2="15" stroke-width="3" stroke-linecap="round"/><line x1="16" y1="15" x2="16" y2="15" stroke-width="3" stroke-linecap="round"/></svg>`,
+  film    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>`,
+  zap     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  globe   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  box     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`,
+  phone   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  send    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
+  instagram:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`,
+  mail    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+};
+
+function getIcon(name) { return ICONS[name] || ICONS.box; }
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  setupScrollReveal();
+  setupHamburger();
+  loadAll();
+});
+
+async function loadAll() {
+  await Promise.all([
+    loadProducts(),
+    loadTestimonials(),
+    loadFAQs(),
+    loadContacts(),
+    loadStats(),
+  ]);
+}
+
+/* ── PRODUCTS ─────────────────────────── */
+async function loadProducts() {
+  let data = null;
+  if (CFG.SB_URL && CFG.SB_KEY) {
+    data = await SB.get('products', 'select=*&active=eq.true&order=sort_order.asc');
+  }
+  allProducts = (data && data.length) ? data.map(p => ({
+    ...p,
+    prices: typeof p.prices === 'string' ? JSON.parse(p.prices) : (p.prices || {}),
+  })) : FB_PRODUCTS;
+
+  buildCategories();
+  renderProducts(allProducts);
+}
+
+function buildCategories() {
+  const catMap = {};
+  allProducts.forEach(p => {
+    const c = p.category || 'other';
+    catMap[c] = (catMap[c] || 0) + 1;
+  });
+
+  categories = Object.entries(catMap).map(([slug, count]) => ({ slug, count }));
+
+  // Update sidebar
+  const sbCats = document.getElementById('sb-cats');
+  sbCats.innerHTML = `
+    <li class="sb-item active" onclick="filterCat('all')" data-cat="all">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
+      Semua <span class="sb-chip">${allProducts.length}</span>
+    </li>
+    ${categories.map(c => `
+    <li class="sb-item" onclick="filterCat('${c.slug}')" data-cat="${c.slug}">
+      ${getIcon(catIconMap(c.slug))}
+      ${capitalize(c.slug)} <span class="sb-chip">${c.count}</span>
+    </li>`).join('')}
+  `;
+
+  // Update cats bar
+  const catsBar = document.getElementById('cats-bar');
+  catsBar.innerHTML = `
+    <button class="cat-btn active" onclick="filterCat('all')" data-c="all">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>
+      Semua
+    </button>
+    ${categories.map(c => `
+    <button class="cat-btn" onclick="filterCat('${c.slug}')" data-c="${c.slug}">
+      ${getIcon(catIconMap(c.slug))}
+      ${capitalize(c.slug)}
+    </button>`).join('')}
+  `;
+}
+
+function catIconMap(slug) {
+  const map = {streaming:'video',music:'music',productivity:'pen',ai:'bot',gaming:'film',other:'box'};
+  return map[slug] || 'box';
+}
+function capitalize(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+
+function renderProducts(prods) {
+  const grid = document.getElementById('products-grid');
+  const countEl = document.getElementById('prod-count');
+  countEl.textContent = `${prods.length} produk`;
+
+  if (!prods.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text3);font-family:'DM Mono',monospace;font-size:12px">Tidak ada produk</div>`;
+    return;
+  }
+
+  grid.innerHTML = prods.map((p, i) => {
+    const minPrice = Math.min(...Object.values(p.prices || {1:0}));
+    const badgeClass = p.badge ? `badge-${p.badge}` : '';
+    return `
+    <div class="product-card reveal d${(i%5)+1}" onclick="openProduct('${p.id || p.name}')">
+      <div class="product-icon">${getIcon(p.icon || 'box')}</div>
+      ${p.badge ? `<div class="product-badge ${badgeClass}">${p.badge.toUpperCase()}</div>` : ''}
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.description || ''}</div>
+      <div class="product-footer">
+        <div>
+          <div class="product-price">${fmtPrice(minPrice)}</div>
+          <span class="product-from">mulai dari / bulan</span>
+        </div>
+        <div class="product-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // re-trigger scroll reveal
+  observeReveal();
+}
+
+function filterCat(cat) {
+  currentCat = cat;
+  filteredProducts = cat === 'all' ? allProducts : allProducts.filter(p => p.category === cat);
+  renderProducts(filteredProducts.length || cat === 'all' ? (cat === 'all' ? allProducts : filteredProducts) : allProducts);
+
+  // Update active states
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.c === cat));
+  document.querySelectorAll('#sb-cats .sb-item').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+}
+
+/* ── PRODUCT DETAIL ─────────────────────── */
+function openProduct(id) {
+  const prod = allProducts.find(p => (p.id || p.name) === id);
+  if (!prod) return;
+  currentProduct = prod;
+  selectedDuration = null;
+  qty = 1;
+  txnId = null; orderId = null;
+
+  // Fill detail page
+  document.getElementById('d-icon').innerHTML = getIcon(prod.icon || 'box');
+  document.getElementById('d-title').textContent = prod.name;
+  document.getElementById('d-desc').textContent = prod.description || '';
+  document.getElementById('s-prod').textContent = prod.name;
+  document.getElementById('s-dur').textContent = '—';
+  document.getElementById('s-qty').textContent = '1 akun';
+  document.getElementById('s-total').textContent = '—';
+  document.getElementById('qty-val').textContent = '1';
+
+  // Duration buttons
+  const prices = prod.prices || {};
+  document.getElementById('dur-grid').innerHTML = Object.entries(prices).map(([dur, price]) =>
+    `<div class="dur-btn" onclick="selectDur('${dur}',${price})" data-dur="${dur}">
+      <div class="dur-label">${dur}</div>
+      <div class="dur-price">${fmtPrice(price)}</div>
+    </div>`
+  ).join('');
+
+  // Hide QRIS, reset pay btn
+  document.getElementById('qris-section').classList.remove('show');
+  const payBtn = document.getElementById('pay-btn');
+  payBtn.disabled = false;
+  payBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Bayar via QRIS`;
+  payBtn.style.display = '';
+
+  // Show detail page
+  showPage('pg-detail');
+  window.scrollTo(0, 0);
+
+  // Auto-select first duration
+  const firstDur = Object.entries(prices)[0];
+  if (firstDur) selectDur(firstDur[0], firstDur[1]);
+}
+
+function selectDur(dur, price) {
+  selectedDuration = { label: dur, price };
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.toggle('selected', b.dataset.dur === dur));
+  updateSummary();
+}
+
+function changeQty(delta) {
+  qty = Math.max(1, Math.min(10, qty + delta));
+  document.getElementById('qty-val').textContent = qty;
+  updateSummary();
+}
+
+function updateSummary() {
+  if (!currentProduct || !selectedDuration) return;
+  const total = selectedDuration.price * qty;
+  document.getElementById('s-dur').textContent = selectedDuration.label;
+  document.getElementById('s-qty').textContent = `${qty} akun`;
+  document.getElementById('s-total').textContent = fmtPrice(total);
+}
+
+/* ── PAYMENT ────────────────────────────── */
+async function doPayment() {
+  if (!currentProduct || !selectedDuration) { toast('Pilih durasi berlangganan terlebih dahulu', 'warn'); return; }
+  const email = document.getElementById('inp-email').value.trim();
+  const wa    = document.getElementById('inp-wa').value.trim();
+  if (!email || !email.includes('@')) { toast('Masukkan email yang valid', 'warn'); return; }
+
+  const total = selectedDuration.price * qty;
+  const payBtn = document.getElementById('pay-btn');
+  payBtn.disabled = true;
+  payBtn.innerHTML = `<span class="spinner"></span> Memproses...`;
+
+  try {
+    const res = await fetch('/api/qris', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        amount  : total,
+        product : currentProduct.name,
+        duration: selectedDuration.label,
+        email, whatsapp: wa,
+        quantity: qty,
+      }),
+    });
+    const data = await res.json();
+
+    if (!data.status) throw new Error(data.message || 'Gagal membuat QRIS');
+
+    txnId   = data.data?.id || data.data?.transaction_id || null;
+    orderId = data.data?.order_id || null;
+    const qrUrl = data.data?.qris_url || data.data?.qr_url || data.data?.image || null;
+
+    // Show QRIS section
+    payBtn.style.display = 'none';
+    document.getElementById('qris-amount').textContent = fmtPrice(total);
+    document.getElementById('qris-section').classList.add('show');
+
+    // Load QR image
+    if (qrUrl) {
+      const img = document.getElementById('qr-img');
+      img.onload = () => {
+        document.getElementById('qr-loader').style.display = 'none';
+        img.style.display = 'block';
+      };
+      img.src = qrUrl;
+    }
+
+    // Show TXN ID
+    if (txnId) {
+      document.getElementById('txn-id-disp').textContent = txnId;
+      document.getElementById('txn-box').style.display = 'flex';
+    }
+
+    startTimer(300); // 5 minutes
+
+  } catch(err) {
+    toast(err.message || 'Terjadi kesalahan', 'error');
+    payBtn.disabled = false;
+    payBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Bayar via QRIS`;
+  }
+}
+
+async function checkPayment() {
+  if (!txnId) { toast('Belum ada transaksi aktif', 'warn'); return; }
+  const btn = document.getElementById('check-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> Mengecek...`;
+
+  try {
+    const params = new URLSearchParams({ id: txnId });
+    if (orderId) params.set('order_id', orderId);
+    const res  = await fetch(`/api/check?${params}`);
+    const data = await res.json();
+
+    if (data.paid) {
+      clearInterval(timerInterval);
+      showSuccess({
+        Produk   : currentProduct.name,
+        Durasi   : selectedDuration.label,
+        Email    : document.getElementById('inp-email').value.trim(),
+        'Trx ID' : txnId,
+      });
+    } else {
+      toast('Pembayaran belum dikonfirmasi. Silakan tunggu atau coba lagi.', 'warn');
+    }
+  } catch(err) {
+    toast(err.message || 'Gagal cek status', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Cek Status Pembayaran`;
+  }
+}
+
+/* ── TIMER ──────────────────────────────── */
+function startTimer(seconds) {
+  clearInterval(timerInterval);
+  const ring = document.getElementById('timer-ring');
+  const num  = document.getElementById('timer-num');
+  const circ = 2 * Math.PI * 28;
+  let remaining = seconds;
+
+  const tick = () => {
+    const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+    const s = String(remaining % 60).padStart(2, '0');
+    num.textContent = `${m}:${s}`;
+    const offset = circ * (1 - remaining / seconds);
+    ring.style.strokeDashoffset = offset;
+    if (remaining <= 60) ring.style.stroke = 'var(--red)';
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      toast('Waktu pembayaran habis. Silakan buat transaksi baru.', 'error');
+      document.getElementById('pay-btn').style.display = '';
+      document.getElementById('pay-btn').disabled = false;
+      document.getElementById('pay-btn').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> Bayar via QRIS`;
+      document.getElementById('qris-section').classList.remove('show');
+    }
+    remaining--;
+  };
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+function copyTxnId() {
+  if (!txnId) return;
+  navigator.clipboard.writeText(txnId).then(() => toast('ID disalin!', 'success'));
+}
+
+/* ── SUCCESS ────────────────────────────── */
+function showSuccess(data) {
+  const box = document.getElementById('account-box');
+  box.innerHTML = Object.entries(data).map(([k,v]) => `
+    <div class="acc-row">
+      <span class="acc-key">${k}</span>
+      <span class="acc-val">${v}
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('${v}').then(()=>this.textContent='OK!')">Salin</button>
+      </span>
+    </div>`).join('');
+  document.getElementById('success-overlay').classList.add('show');
+}
+
+function closeSuccess() {
+  document.getElementById('success-overlay').classList.remove('show');
+  goHome();
+}
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════ */
+async function loadTestimonials() {
+  let data = null;
+  if (CFG.SB_URL && CFG.SB_KEY) {
+    data = await SB.get('testimonials', 'select=*&active=eq.true&order=created_at.desc');
+  }
+  testiData = (data && data.length) ? data : FB_TESTI;
+  renderTestimonials();
+  startTestiAuto();
+}
+
+function renderTestimonials() {
+  const track = document.getElementById('testi-track');
+  const dots  = document.getElementById('testi-dots');
+
+  track.innerHTML = testiData.map(t => {
+    const stars = '★'.repeat(t.rating || 5) + '☆'.repeat(5 - (t.rating || 5));
+    return `
+    <div class="testimonial-card">
+      <div class="testi-stars">${[...Array(t.rating||5)].map(()=>`<svg class="star-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`).join('')}</div>
+      <div class="testi-text">"${t.message}"</div>
+      <div class="testi-author">
+        <div class="testi-avatar">${t.name.charAt(0)}</div>
+        <div>
+          <div class="testi-name">${t.name}</div>
+          <div class="testi-product">${t.product}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  dots.innerHTML = testiData.map((_,i) =>
+    `<div class="dot ${i===0?'active':''}" onclick="goTesti(${i})"></div>`
+  ).join('');
+}
+
+function goTesti(idx) {
+  testiIdx = (idx + testiData.length) % testiData.length;
+  document.getElementById('testi-track').style.transform = `translateX(-${testiIdx * 100}%)`;
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i === testiIdx));
+}
+function testiPrev() { clearInterval(testiTimer); goTesti(testiIdx - 1); startTestiAuto(); }
+function testiNext() { clearInterval(testiTimer); goTesti(testiIdx + 1); startTestiAuto(); }
+function startTestiAuto() {
+  clearInterval(testiTimer);
+  testiTimer = setInterval(() => goTesti(testiIdx + 1), 5000);
+}
+
+/* ══════════════════════════════════════════
+   FAQs
+══════════════════════════════════════════ */
+async function loadFAQs() {
+  let data = null;
+  if (CFG.SB_URL && CFG.SB_KEY) {
+    data = await SB.get('faqs', 'select=*&active=eq.true&order=sort_order.asc');
+  }
+  const faqs = (data && data.length) ? data : FB_FAQS;
+  const list = document.getElementById('faq-list');
+  list.innerHTML = faqs.map((f, i) => `
+    <div class="faq-item" id="faq-${i}">
+      <div class="faq-q" onclick="toggleFaq(${i})">
+        <span>${f.question}</span>
+        <div class="faq-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div class="faq-a"><div class="faq-a-inner">${f.answer}</div></div>
+    </div>`).join('');
+}
+
+function toggleFaq(idx) {
+  document.querySelectorAll('.faq-item').forEach((el, i) => {
+    if (i !== idx) el.classList.remove('open');
+  });
+  document.getElementById(`faq-${idx}`)?.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════════
+   CONTACTS
+══════════════════════════════════════════ */
+async function loadContacts() {
+  let data = null;
+  if (CFG.SB_URL && CFG.SB_KEY) {
+    data = await SB.get('contacts', 'select=*');
+  }
+  const contacts = (data && data.length) ? data : FB_CONTACTS;
+  const grid = document.getElementById('contact-grid');
+  grid.innerHTML = contacts.map(c => `
+    <div class="contact-card" onclick="if('${c.url}')window.open('${c.url}','_blank')">
+      <div class="contact-ico">${getIcon(c.icon || 'mail')}</div>
+      <div>
+        <div class="contact-label">${c.platform}</div>
+        <div class="contact-value">${c.value}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════
+   STATS
+══════════════════════════════════════════ */
+async function loadStats() {
+  let count = null;
+  if (CFG.SB_URL && CFG.SB_KEY) {
+    const data = await SB.get('orders', 'select=id&status=eq.paid');
+    if (data) count = data.length;
+  }
+  const el = document.getElementById('stat-customers');
+  const num = count !== null ? count : 1200;
+  animateCount(el, 0, num, 1200);
+}
+
+function animateCount(el, from, to, dur) {
+  const start = performance.now();
+  const update = (now) => {
+    const t = Math.min((now - start) / dur, 1);
+    const val = Math.floor(from + (to - from) * easeOut(t));
+    el.textContent = val >= 1000 ? (val/1000).toFixed(1)+'k' : val;
+    if (t < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+function goHome() {
+  showPage('pg-home');
+  clearInterval(timerInterval);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function scrollToSection(id) {
+  if (document.getElementById('pg-home').classList.contains('active')) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  } else {
+    goHome();
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 300);
+  }
+  closeSidebar();
+}
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon(next);
+}
+function updateThemeIcon(theme) {
+  document.getElementById('ico-moon').style.display = theme === 'dark'  ? '' : 'none';
+  document.getElementById('ico-sun').style.display  = theme === 'light' ? '' : 'none';
+}
+
+/* ══════════════════════════════════════════
+   CONFIG MODAL
+══════════════════════════════════════════ */
+function openConfig() {
+  document.getElementById('sb-url').value = CFG.SB_URL;
+  document.getElementById('sb-key').value = CFG.SB_KEY;
+  document.getElementById('cfg-modal').classList.add('show');
+}
+function closeCfg() { document.getElementById('cfg-modal').classList.remove('show'); }
+function saveCfg() {
+  const url = document.getElementById('sb-url').value.trim();
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { toast('Isi semua field', 'warn'); return; }
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_anon', key);
+  CFG.SB_URL = url; CFG.SB_KEY = key;
+  closeCfg();
+  toast('Konfigurasi disimpan, memuat ulang data...', 'success');
+  setTimeout(() => loadAll(), 500);
+}
+
+/* ══════════════════════════════════════════
+   HAMBURGER & SIDEBAR
+══════════════════════════════════════════ */
+function setupHamburger() {
+  document.getElementById('hamburger').addEventListener('click', toggleSidebar);
+}
+function toggleSidebar() {
+  const sb  = document.getElementById('sidebar');
+  const hbg = document.getElementById('hamburger');
+  const bd  = document.getElementById('sb-backdrop');
+  const isOpen = sb.classList.toggle('open');
+  hbg.classList.toggle('open', isOpen);
+  bd.style.display = isOpen ? 'block' : 'none';
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+function closeSidebar() {
+  const sb  = document.getElementById('sidebar');
+  const hbg = document.getElementById('hamburger');
+  const bd  = document.getElementById('sb-backdrop');
+  sb.classList.remove('open');
+  hbg.classList.remove('open');
+  bd.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════ */
+function setupScrollReveal() {
+  observeReveal();
+}
+function observeReveal() {
+  const els = document.querySelectorAll('.reveal:not(.visible)');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => obs.observe(el));
+}
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type === 'error' ? 'error' : type === 'success' ? 'success' : type === 'warn' ? 'warn' : ''}`;
+  const icons = {
+    success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    error  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    warn   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    info   : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+  el.innerHTML = (icons[type] || icons.info) + msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(60px)'; el.style.transition = 'all .3s'; setTimeout(() => el.remove(), 300); }, 3200);
+}
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function fmtPrice(n) {
+  return 'Rp' + Number(n).toLocaleString('id-ID');
+}
+</script>
+</body>
+</html>
